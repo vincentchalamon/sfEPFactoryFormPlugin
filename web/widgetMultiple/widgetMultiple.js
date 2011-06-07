@@ -80,9 +80,8 @@ $(document).ready(function(){
   $('.widget_multiple_empty_add_label .ajouter').live('click', function(event){
     event.preventDefault();
     var widgetMultipleMainContainer = $(this).parents('.widget_multiple:first');
-    $(".widget_multiple_element:first", widgetMultipleMainContainer).show();
+    $(".widget_multiple_element:first", widgetMultipleMainContainer).show().parent().show();
     $(".widget_multiple_element:first", widgetMultipleMainContainer).find('input, select, textarea').removeAttr("disabled");
-    $(".widget_multiple_element:first", widgetMultipleMainContainer).parent().show();
     $(this).parents('.widget_multiple_empty_add_label:first').hide();
   });
 

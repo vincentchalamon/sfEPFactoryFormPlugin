@@ -89,7 +89,8 @@ class sfWidgetFormMultiple extends sfWidgetForm {
       $html.= $widget->isHidden() ? $widget->render($name."[$count][$widgetName]", $widgetValue, $widget->getAttributes()) : str_ireplace(array("%%label%%", "%%input%%", "%%widgetClass%%"), array(!$widget->getOption("label") ? null : $this->renderContentTag("label", $widget->getLabel(), array('for' => $widget->generateId($name."[$count][$widgetName]"))), $widget->render($name."[$count][$widgetName]", $widgetValue, $widget->getAttributes()), $widget->getAttribute("widgetClass")), $this->getOption("widget_template"));
     }
 
-    return ($hidden ? $this->getOption("empty_add_label")."<div style='display:none;'>" : null).str_ireplace("%%widgets%%", $html, $this->getOption($template)).($hidden ? "</div>" : null);
+    $render = str_ireplace("%%widgets%%", $html, $this->getOption($template));
+    return !$hidden ? $render : $this->getOption("empty_add_label").preg_replace('/(class=["\'][^"\']*widget_multiple_element[^"\']*["\'])/i', "$1 style='display:none;'", $render);
   }
 
 }
