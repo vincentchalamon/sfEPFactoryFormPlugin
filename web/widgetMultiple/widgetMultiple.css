@@ -1,48 +1,33 @@
-/* Ajouter / Retirer (+ / -) */
-.retirer {
+.retirer, .ajouter {
   border-radius: 28px;
   -moz-border-radius: 28px;
   -webkit-border-radius: 28px;
+  padding: 3px 6px;
+  text-align: center;
+  font-weight: bold;
+  -webkit-box-shadow: 0 1px 2px #a3abae;
+  -moz-box-shadow: 0 1px 2px #a3abae;
+  box-shadow: 0 1px 2px #a3abae;
+  width: 8px !important;
+  color: white !important;
+  text-decoration: none !important;
+}
+
+.retirer {
   background: #e8244a;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e8244a', endColorstr='#c90342');
   background: -webkit-gradient(linear, left top, left bottom, from(#e8244a), to(#c90342));
   background: -moz-linear-gradient(top,#e8244a,#c90342);
-  padding: 3px 6px;
-  display: inline-block;
-  width: 8px !important;
-  text-align: center;
-  color: white;
-  font-weight: bold;
   text-shadow: #a06b00 0px -1px 0px;
-  -webkit-box-shadow: 0 1px 2px #a3abae;
-  -moz-box-shadow: 0 1px 2px #a3abae;
-  box-shadow: 0 1px 2px #a3abae;
+  display: inline-block;
 }
 
 .ajouter {
-  border-radius: 28px;
-  -moz-border-radius: 28px;
-  -webkit-border-radius: 28px;
   background: #b3d219;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#b3d219', endColorstr='#76a112');
   background: -webkit-gradient(linear, left top, left bottom, from(#b3d219), to(#76a112));
   background: -moz-linear-gradient(top,#b3d219,#76a112);
-  padding: 3px 6px;
-  display: inline-block;
-  width: 8px !important;
-  text-align: center;
-  color: white;
-  font-weight: bold;
   text-shadow: #829910 0px -1px 0px;
-  -webkit-box-shadow: 0 1px 2px #a3abae;
-  -moz-box-shadow: 0 1px 2px #a3abae;
-  box-shadow: 0 1px 2px #a3abae;
-}
-
-.retirer, .ajouter, .retirer:hover, .ajouter:hover {
-  color: white !important;
-  margin-top: 5px;
-  text-decoration: none !important;
 }
 
 .widget_template {
