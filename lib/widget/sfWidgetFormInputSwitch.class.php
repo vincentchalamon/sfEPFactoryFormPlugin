@@ -3,7 +3,13 @@
 class sfWidgetFormInputSwitch extends sfWidgetFormSelectRadio {
 
   public function render($name, $value = null, $attributes = array(), $errors = array()) {
-    return $this->renderContentTag("p", parent::render($name, $value, $attributes, $errors), array('class' => "switch"));
+    if(isset($attributes['class'])) {
+      $attributes['class'].= " noTransform";
+    }
+    else {
+      $attributes['class'] = "noTransform";
+    }
+    return $this->renderContentTag("span", parent::render($name, $value, $attributes, $errors), array('class' => "switch"));
   }
 
   public function getStylesheets() {

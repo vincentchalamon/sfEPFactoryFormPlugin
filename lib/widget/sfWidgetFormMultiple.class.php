@@ -86,7 +86,14 @@ class sfWidgetFormMultiple extends sfWidgetForm {
         throw new sfException("Vous devez passer des instances de sfWidgetForm.", 500);
       }
       $widgetValue = $object ? (isset($object[$widgetName]) ? $object[$widgetName] : false) : null;
-      $html.= $widget->isHidden() ? $widget->render($name."[$count][$widgetName]", $widgetValue, $widget->getAttributes()) : str_ireplace(array("%%label%%", "%%input%%", "%%widgetClass%%"), array(!$widget->getOption("label") ? null : $this->renderContentTag("label", $widget->getLabel(), array('for' => $widget->generateId($name."[$count][$widgetName]"))), $widget->render($name."[$count][$widgetName]", $widgetValue, $widget->getAttributes()), $widget->getAttribute("widgetClass")), $this->getOption("widget_template"));
+      $attributes = $widget->getAttributes();
+      if(isset($attributes['class'])) {
+        $attributes['class'].= " noTransform";
+      }
+      else {
+        $attributes['class'] = "noTransform";
+      }
+      $html.= $widget->isHidden() ? $widget->render($name."[$count][$widgetName]", $widgetValue, $attributes) : str_ireplace(array("%%label%%", "%%input%%", "%%widgetClass%%"), array(!$widget->getOption("label") ? null : $this->renderContentTag("label", $widget->getLabel(), array('for' => $widget->generateId($name."[$count][$widgetName]"))), $widget->render($name."[$count][$widgetName]", $widgetValue, $attributes), $widget->getAttribute("widgetClass")), $this->getOption("widget_template"));
     }
 
     $render = str_ireplace("%%widgets%%", $html, $this->getOption($template));
