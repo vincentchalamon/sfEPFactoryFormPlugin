@@ -30,6 +30,10 @@ class sfWidgetFormKeyboard extends sfWidgetForm {
   }
 
   public function render($name, $value = null, $attributes = array(), $errors = array()) {
+    // Override value for hour
+    if(preg_match('/hour/i', $name) && preg_match('/(\d{2}):(\d{2}):(\d{2})/i', $value) && $this->getOption('layout') == "hour") {
+      $value = preg_replace('/(\d{2}):(\d{2}):(\d{2})/i', "$1h$2", $value);
+    }
     // Prepare widget
     $class = $this->getOption('renderer_class');
     if(!class_exists($class)) {
