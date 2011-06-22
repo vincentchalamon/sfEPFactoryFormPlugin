@@ -2,7 +2,7 @@
 /**
 * 
 */
-class sfValidatorDateCustom extends sfValidatorTime
+class sfValidatorHourCustom extends sfValidatorTime
 {
   protected function doClean($value) {
     if(!preg_match('/(\d{2})h(\d{2})/i', $value)) {
