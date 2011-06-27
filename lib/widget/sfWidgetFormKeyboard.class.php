@@ -52,7 +52,7 @@ class sfWidgetFormKeyboard extends sfWidgetForm {
   });
 </script>
 EOF
-            , $this->getOption('caching') ? sprintf('var cache_%s = {};', $this->generateId($name, $value)) : null
+            , $this->getOption('caching') && $this->getOption('url') ? sprintf('var cache_%s = {};', $this->generateId($name, $value)) : null
             , $this->generateId($name, $value)
             , $this->getOption("layout")
             , $this->getOption("maxLength")
@@ -80,7 +80,7 @@ EOF
       }
     }).addAutocomplete()
 EOF
-                            , $this->getOption('caching') ? sprintf(<<<EOF
+                            , $this->getOption('caching') && $this->getOption('url') ? sprintf(<<<EOF
 if(request.term in cache_%s) {
           response(cache_%s[request.term]);
           return;
@@ -90,7 +90,7 @@ EOF
                                             , $this->generateId($name, $value)
                                     ) : null
                             , $this->getOption('url')
-                            , $this->getOption('caching') ? sprintf('cache_%s[request.term] = datas;', $this->generateId($name, $value)) : null
+                            , $this->getOption('caching') && $this->getOption('url') ? sprintf('cache_%s[request.term] = datas;', $this->generateId($name, $value)) : null
                     ) : null
     ).$widget->render($name, $value, $attributes, $errors);
   }
