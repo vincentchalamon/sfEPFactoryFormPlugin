@@ -35,16 +35,20 @@ class sfWidgetFormInputPlain extends sfWidgetFormInputHidden
       $field = $this->getOption('value');
     }
     else {
-      $field = "<span>$value</span>";
+      $field = $value;
       // Time
-      if(preg_match('/(\d{2}):(\d{2}):(\d{2})/', $value)) {
-        $field = "<span>".preg_replace('/(\d{2}):(\d{2}):(\d{2})/', '$1h$2', $value)."</span>";
+      if(preg_match('/^(\d{2}):(\d{2}):(\d{2})$/', $value)) {
+        $field = date('H\hi', strtotime($value));
       }
       // Date
-      if(preg_match('/(\d{4})-(\d{2})-(\d{2})/', $value)) {
-        $field = "<span>".preg_replace('/(\d{4})-(\d{2})-(\d{2})/', '$3/$2/$1', $value)."</span>";
+      elseif(preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value)) {
+        $field = date('d/m/Y', strtotime($value));
+      }
+      // Timestamp
+      elseif(preg_match('/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})$/', $value)) {
+        $field = date('d/m/Y H\hi', strtotime($value));
       }
     }
-    return $field.parent::render($name, $value, $attributes, $errors);
+    return "<span>$field</span>".parent::render($name, $value, $attributes, $errors);
   }
 }

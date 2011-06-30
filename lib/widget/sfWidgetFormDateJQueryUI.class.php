@@ -81,7 +81,6 @@ EOF
    *
    * @return array An array of stylesheet paths
    */
-
   public function getStylesheets()
   {
     return array($this->getOption('theme') => 'screen');
