@@ -47,7 +47,13 @@ class sfWidgetFormKeyboard extends sfWidgetForm {
     $("#%s").keyboard({
       layout: "%s",
       maxLength: %s,
-      autoAccept: true
+      autoAccept: true,
+      accepted: function(event, element){
+        if($(this).attr('class').match(/validate\[[A-z,\[\]]+\]/i) && $.validationEngine != undefined) {
+          $.validationEngine.loadValidation($(this));
+        }
+        $(element).change();
+      }
     })%s;
   });
 </script>

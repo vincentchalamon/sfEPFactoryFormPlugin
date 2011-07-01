@@ -6,6 +6,7 @@
 }
 .ui-slider .ui-slider-handle  {
 	overflow: visible !important;
+    z-index: 1;
 }
 .ui-slider .ui-slider-tooltip {
 	display: none;
