@@ -80,9 +80,13 @@ $(document).ready(function(){
   $('.widget_multiple_empty_add_label .ajouter').live('click', function(event){
     event.preventDefault();
     var widgetMultipleMainContainer = $(this).parents('.widget_multiple:first');
-    $(".widget_multiple_element:first", widgetMultipleMainContainer).show().parent().show();
+    var clone = $(".widget_multiple_element:first", widgetMultipleMainContainer).show().parent().show();
     $(".widget_multiple_element:first", widgetMultipleMainContainer).find('input, select, textarea').removeAttr("disabled");
     $(this).parents('.widget_multiple_empty_add_label:first').hide();
+    // Appel callback
+    if($(this).parents('.widget_multiple:last').attr('callback')) {
+      eval($(this).parents('.widget_multiple:last').attr('callback') + "(clone)");
+    }
   });
 
   // Si la première valeure doit être empty :

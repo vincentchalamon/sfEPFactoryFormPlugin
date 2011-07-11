@@ -34,8 +34,18 @@ class sfWidgetFormMultiple extends sfWidgetForm {
   }
 
   public function getWidgetOption($name, $option, $default = null) {
+    return $this->getWidget($name) ? $this->getWidget($name)->getOption($option) : $default;
+  }
+
+  /**
+   * Retrieve a widget from its name
+   * 
+   * @param string $name Widget name
+   * @return sfWidgetForm
+   */
+  public function getWidget($name) {
     $widgets = $this->getOption("widgets");
-    return isset($widgets[$name]) ? $widgets[$name]->getOption($option) : $default;
+    return isset($widgets[$name]) ? $widgets[$name] : false;
   }
 
   public function render($name, $value = null, $attributes = array(), $errors = array()) {
