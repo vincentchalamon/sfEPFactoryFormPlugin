@@ -1,6 +1,6 @@
 <?php
 
-class sfWidgetFormInputUploadify extends sfWidgetFormInputFile
+class sfWidgetFormInputUploadify extends sfWidgetFormInputText
 {
   protected function configure($options = array(), $attributes = array()) {
     parent::configure($options, $attributes);
@@ -14,7 +14,6 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputFile
     $this->addOption('max');
     $this->addOption('scriptData');
     $this->addOption('sizeLimit');
-    $this->addOption('editable', true);
     $this->addOption('addScript', true);
     $this->addOption('fullMessage', "Vous ne pouvez uploader que jusqu'à %%max%% fichiers.");
     $this->addOption('errorMessage', "Une erreur est survenue.");
@@ -35,7 +34,12 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputFile
     else {
       $attributes['class'] = "uploadify";
     }
-    return parent::render($name, $value, $attributes, $errors).($this->getOption('addScript') ? $this->getScript("#".$this->generateId($name, $value)) : null);
+    // Prepare rendering
+    $render = parent::render($name, $value, $attributes, $errors);
+    if($this->getOption('addScript')) {
+      $render.= $this->getScript("#".$this->generateId($name, $value));
+    }
+    return $render;
   }
 
   /**
@@ -65,6 +69,17 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputFile
       'removeCompleted' : false,
       'scriptData'      : %s,
       'sizeLimit'       : %s,
+      'onComplete'      : function(event, queueID, fileObj, response, data) {
+        if(response.match(/^error/i)) {
+          %s(response.substr(6));
+        }
+        else if(%s) {
+          $(event.target).val($(event.target).val() + ($(event.target).val().length ? ";" : "") + response);
+        }
+        else {
+          $(event.target).val(response);
+        }
+      },
       'onQueueFull'     : function(event, queueSizeLimit) {
         %s('%s');
         return false;
@@ -88,6 +103,8 @@ EOF
             , $this->getOption('max') ? $this->getOption('max') : 999
             , json_encode(array_merge(array('folder' => $this->getOption('path')), $this->getOption('scriptData') ? $this->getOption('scriptData') : array()))
             , $this->getOption('sizeLimit') ? $this->getOption('sizeLimit') : "null"
+            , $this->getOption('alertFunction')
+            , $this->getOption('multi') ? 'true' : 'false'
             , $this->getOption('alertFunction')
             , str_ireplace("'", "\'", str_ireplace('%%max%%', $this->getOption('max'), $this->getOption('fullMessage')))
             , $this->getOption('alertFunction')
