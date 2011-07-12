@@ -15,6 +15,7 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
     $this->addOption('scriptData');
     $this->addOption('sizeLimit');
     $this->addOption('addScript', true);
+    $this->addOption('editable', true);
     $this->addOption('fullMessage', "Vous ne pouvez uploader que jusqu'à %%max%% fichiers.");
     $this->addOption('errorMessage', "Une erreur est survenue.");
     $this->addOption('alertFunction', "alert");
@@ -34,8 +35,36 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
     else {
       $attributes['class'] = "uploadify";
     }
+    if(is_array($value)) {
+      $value = implode(";", $value);
+    }
     // Prepare rendering
     $render = parent::render($name, $value, $attributes, $errors);
+    if($this->getOption('editable') && count(explode(';', $value))) {
+      $render.= sprintf('<div class="uploadifyQueue uploadifyQueueCustom" id="%s_listQueue_custom">', $this->generateId($name, $value));
+      foreach(explode(';', $value) as $filename) {
+        $hash = "";
+        for($i = 0; $i <= 5; $i++) {
+          $hash.= strtoupper(chr(rand(65, 90)));
+        }
+        $render.= sprintf(<<<EOF
+  <div class="uploadifyQueueItem completed">
+    <div class="cancel">
+      <a href="#" rel="%s">
+        <img border="0" src="/sfEPFactoryFormPlugin/uploadify/cancel.png" />
+      </a>
+    </div>
+    <span class="fileName">%s (%s KB)</span>
+    <span class="percentage"> - Completed</span>
+  </div>
+EOF
+                , $filename
+                , strlen(basename($filename)) > 20 ? substr(basename($filename), 0, 20)."..." : basename($filename)
+                , filesize(sfConfig::get('sf_web_dir').$filename)/1000
+                );
+      }
+      $render.= "</div>";
+    }
     if($this->getOption('addScript')) {
       $render.= $this->getScript("#".$this->generateId($name, $value));
     }
@@ -69,16 +98,17 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
       'removeCompleted' : false,
       'scriptData'      : %s,
       'sizeLimit'       : %s,
-      'onComplete'      : function(event, queueID, fileObj, response, data) {
+      'onComplete'      : function(event, ID, fileObj, response, data) {
         if(response.match(/^error/i)) {
           %s(response.substr(6));
         }
-        else if(%s) {
-          $(event.target).val($(event.target).val() + ($(event.target).val().length ? ";" : "") + response);
-        }
         else {
-          $(event.target).val(response);
+          $(event.target).val(%s ? $(event.target).val() + ($(event.target).val().length ? ";" : "") + response : response);
+          $('#' + $(event.target).attr('id') + ID).append('<span style="display: none" class="value">' + response + '</span>');
         }
+      },
+      'onCancel'        : function(event, ID, fileObj, data) {
+        $(event.target).val($(event.target).val().replace($('#' + $(event.target).attr('id') + ID + ' .value').html(), '').replace(/[;]{1,}/i, ';').replace(/^;(.*)/i, '$1').replace(/(.*);$/i, '$1'));
       },
       'onQueueFull'     : function(event, queueSizeLimit) {
         %s('%s');
@@ -88,6 +118,14 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
         %s('%s');
         return false;
       }
+    });
+    $('%s').siblings('.uploadifyQueueCustom').find('.cancel a').click(function(event){
+      event.preventDefault();
+      var input = $(this).parents('.uploadifyQueueCustom:first').siblings('input:text.uploadify');
+      input.val(input.val().replace($(this).attr('rel'), '').replace(/[;]{1,}/i, ';').replace(/^;(.*)/i, '$1').replace(/(.*);$/i, '$1'));
+      $(this).parents('.uploadifyQueueItem:first').fadeOut(500, function(){
+        $(this).remove();
+      });
     });
   });
 </script>
@@ -109,6 +147,7 @@ EOF
             , str_ireplace("'", "\'", str_ireplace('%%max%%', $this->getOption('max'), $this->getOption('fullMessage')))
             , $this->getOption('alertFunction')
             , str_ireplace("'", "\'", $this->getOption('errorMessage'))
+            , $name
           );
   }
 
