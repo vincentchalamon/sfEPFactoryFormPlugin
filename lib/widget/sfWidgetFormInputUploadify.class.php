@@ -39,15 +39,18 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
       $value = implode(";", $value);
     }
     // Prepare rendering
-    $render = parent::render($name, $value, $attributes, $errors);
-    if($this->getOption('editable') && count(explode(';', $value))) {
+    $render = "";
+    if($this->getOption('editable') && $value) {
       $render.= sprintf('<div class="uploadifyQueue uploadifyQueueCustom" id="%s_listQueue_custom">', $this->generateId($name, $value));
+      $filenames = array();
       foreach(explode(';', $value) as $filename) {
-        $hash = "";
-        for($i = 0; $i <= 5; $i++) {
-          $hash.= strtoupper(chr(rand(65, 90)));
-        }
-        $render.= sprintf(<<<EOF
+        if(is_file(sfConfig::get('sf_web_dir').$filename)) {
+          $filenames[]= $filename;
+          $hash = "";
+          for($i = 0; $i <= 5; $i++) {
+            $hash.= strtoupper(chr(rand(65, 90)));
+          }
+          $render.= sprintf(<<<EOF
   <div class="uploadifyQueueItem completed">
     <div class="cancel">
       <a href="#" rel="%s">
@@ -58,17 +61,19 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
     <span class="percentage"> - Completed</span>
   </div>
 EOF
-                , $filename
-                , strlen(basename($filename)) > 20 ? substr(basename($filename), 0, 20)."..." : basename($filename)
-                , filesize(sfConfig::get('sf_web_dir').$filename)/1000
-                );
+                  , $filename
+                  , strlen(basename($filename)) > 20 ? substr(basename($filename), 0, 20)."..." : basename($filename)
+                  , filesize(sfConfig::get('sf_web_dir').$filename)/1000
+                  );
+        }
       }
+      $value = implode(";", $filenames);
       $render.= "</div>";
     }
     if($this->getOption('addScript')) {
       $render.= $this->getScript("#".$this->generateId($name, $value));
     }
-    return $render;
+    return parent::render($name, $value, $attributes, $errors).$render;
   }
 
   /**
