@@ -18,8 +18,7 @@
  */
 class sfValidatorUrlCustom extends sfValidatorRegex
 {
-  const REGEX_URL_FORMAT = "~^/([A-z\d_\-/#]+)?$~ix";
-  const SYMFONY_REGEX_URL_FORMAT = "~^(/([A-z\d\_\-/#]+)?|(@[A-z\_\-\d]+)|([A-z\_\-\d]+/[A-z\_\-\d]+))$~ix";
+  const REGEX_URL_FORMAT = "~^(/([A-z\d\_\-/#]+)?)|(@[A-z\_\-\d]+)|([A-z\_\-\d]+/[A-z\_\-\d]+)|((%s)://(([a-z0-9-]+\.)+[a-z]{2,6}|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:[0-9]+)?(/?|/\S+))$~ix";
 
   /**
    * Available options:
@@ -34,28 +33,22 @@ class sfValidatorUrlCustom extends sfValidatorRegex
   protected function configure($options = array(), $messages = array())
   {
     parent::configure($options, $messages);
-    $this->setOption('pattern', self::REGEX_URL_FORMAT);
-    $this->addMessage('exist', "L'url %value% existe déjà !");
     $this->addOption('allow_symfony_routes', false);
+    $this->addOption('allow_external_routes', false);
+    $this->addOption('protocols', array('http', 'https', 'ftp', 'ftps'));
+    $this->setOption('pattern', self::REGEX_URL_FORMAT);
   }
 
   public function getPattern()
   {
-    return $this->getOption("allow_symfony_routes") ? self::SYMFONY_REGEX_URL_FORMAT : self::REGEX_URL_FORMAT;
+    return sprintf(self::REGEX_URL_FORMAT, implode('|', $this->getOption('protocols')));
   }
 
   protected function doClean($value)
   {
     // Force http default protocol
-    if(substr($value, 0, 1) != "/" && !$this->getOption("allow_symfony_routes")) $value = "/$value";
-    // Clean routing
-    foreach(sfYaml::load(sfConfig::get('sf_app_config_dir').'/routing.yml') as $route)
-    {
-      if((isset($route['url']) && $value == $route['url'])
-        || (isset($route['class']) && $route['class'] == "sfDoctrineRouteCollection" && preg_match(sprintf("~^%s~i", $route['options']['prefix_path']), $value)))
-      {
-        throw new sfValidatorError($this, 'exist', array('value' => $value));
-      }
+    if(substr($value, 0, 1) != "/" && !$this->getOption("allow_symfony_routes") && !$this->getOption("allow_external_routes")) {
+      $value = "/$value";
     }
     return parent::doClean($value);
   }
