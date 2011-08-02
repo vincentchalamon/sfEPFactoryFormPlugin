@@ -4,8 +4,9 @@ $(document).ready(function(){
     event.preventDefault();
     var $link = $(this);
     var widgetMultipleMainContainer = $(this).parents('.widget_multiple:first');
-    var clone = $(this).parents('.widget_multiple_element:first').clone().insertAfter($(this).parent());
-    clone.find('input, textarea').val('').removeAttr('checked');
+    var parent = $(this).parent();
+    var clone = $(this).parents('.widget_multiple_element:first').clone().insertAfter(parent);
+    clone.find('input:text, input:password, textarea').val('').removeAttr('checked');
 
     // On remplace les name et id de tous les champs de formulaire de l'objet de chaque niveau
     var foundNameArray = widgetMultipleMainContainer.children('.widget_multiple_element').last().prev().find('input, select, textarea').attr("name").match(/(\d+)/ig);
@@ -31,9 +32,6 @@ $(document).ready(function(){
       }
     });
     
-    // On remplace le + par un - dans l'élément courant
-    $(this).removeClass('ajouter').addClass('retirer').html("-").attr('title', 'Retirer');
-    
     // Limite le nombre de résultats dans le clone
     var maxNumValue = parseInt(widgetMultipleMainContainer.attr("maxnum"));
     if(maxNumValue != null && maxNumValue > 0) {
@@ -57,7 +55,7 @@ $(document).ready(function(){
     // Il ne reste plus qu'un élément
     if($(".widget_multiple_element", widgetMultipleMainContainer).length == 1) {
       // @TODO Faut-il toujours afficher le empty_add ?
-      $(this).parents('.widget_multiple_element:first').hide().find('.widget_multiple_empty_add_label').show();
+      $(this).parents('.widget_multiple_element:first').hide().siblings('.widget_multiple_empty_add_label').show();
     }
     else {
       $(this).parents('.widget_multiple_element:first').remove();
@@ -97,4 +95,8 @@ $(document).ready(function(){
       firstElement.find('input, select, textarea').attr("disabled", "disabled");
     });
   }
+
+  $('.widget_multiple').parents('form').live('submit', function(event){
+    $('.widget_multiple_element:hidden', $(this)).remove();
+  });
 });

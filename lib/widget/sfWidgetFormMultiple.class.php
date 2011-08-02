@@ -4,13 +4,13 @@ class sfWidgetFormMultiple extends sfWidgetForm {
 
   protected function configure($options = array(), $attributes = array()) {
     $this->addRequiredOption('widgets');
-    $this->addOption("template", "<div class='template widget_multiple_element'>%%widgets%%<a href='#' class='retirer'>-</a></div>");
-    $this->addOption("last_template", "<div class='template widget_multiple_element'>%%widgets%%<a href='#' class='ajouter'>+</a></div>");
+    $this->addOption("template", "<div class='template widget_multiple_element'>%%widgets%%<a href='#' class='retirer'>-</a><a href='#' class='ajouter'>+</a></div>");
+    $this->addOption("last_template", "<div class='template widget_multiple_element'>%%widgets%%<a href='#' class='retirer'>-</a><a href='#' class='ajouter'>+</a></div>");
     $this->addOption("widget_template", "<div class='widget_template %%widgetClass%%'>%%label%%%%input%%</div>");
 
     //Gestion add_empty FALSE
     $this->addOption("empty_add_label", '<div class="widget_multiple_empty_add_label"><a href="" title="Ajouter" class="ajouter">Ajouter</a></div>');
-    $this->addOption("add_empty", true);
+    $this->addOption("add_empty", false);
     $this->addOption("callback");
 
     //Gestion d'un max
