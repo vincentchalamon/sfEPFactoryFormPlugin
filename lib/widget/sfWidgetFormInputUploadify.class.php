@@ -68,6 +68,7 @@ EOF
         }
       }
       $value = implode(";", $filenames);
+      $this->setOption('max', (int)$this->getOption('max')-count($filenames));
       $render.= "</div>";
     }
     if($this->getOption('addScript')) {
