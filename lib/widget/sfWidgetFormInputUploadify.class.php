@@ -11,7 +11,7 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
     $this->addOption('fileExt');
     $this->addOption('fileDesc');
     $this->addOption('multi', false);
-    $this->addOption('max');
+    $this->addOption('max', 999);
     $this->addOption('scriptData');
     $this->addOption('sizeLimit');
     $this->addOption('addScript', true);
@@ -68,7 +68,6 @@ EOF
         }
       }
       $value = implode(";", $filenames);
-      $this->setOption('max', (int)$this->getOption('max')-count($filenames));
       $render.= "</div>";
     }
     if($this->getOption('addScript')) {
@@ -144,7 +143,7 @@ EOF
             , $this->getOption('fileExt') ? "'".str_ireplace("'", "\'", $this->getOption('fileExt'))."'" : "null"
             , $this->getOption('fileDesc') ? "'".str_ireplace("'", "\'", $this->getOption('fileDesc'))."'" : "null"
             , $this->getOption('multi') ? 'true' : 'false'
-            , $this->getOption('max') ? $this->getOption('max') : 999
+            , $this->getOption('max')
             , json_encode(array_merge(array('folder' => $this->getOption('path')), $this->getOption('scriptData') ? $this->getOption('scriptData') : array()))
             , $this->getOption('sizeLimit') ? $this->getOption('sizeLimit') : "null"
             , $this->getOption('alertFunction')
