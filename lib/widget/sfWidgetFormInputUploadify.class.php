@@ -16,7 +16,7 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
     $this->addOption('sizeLimit');
     $this->addOption('addScript', true);
     $this->addOption('editable', true);
-    $this->addOption('fullMessage', "Vous ne pouvez uploader que jusqu'à %%max%% fichiers.");
+    $this->addOption('fullMessage', "Vous ne pouvez uploader que %%max%% fichiers maximum.");
     $this->addOption('errorMessage', "Une erreur est survenue.");
     $this->addOption('alertFunction', "alert");
   }
@@ -103,6 +103,11 @@ EOF
       'removeCompleted' : false,
       'scriptData'      : %s,
       'sizeLimit'       : %s,
+      'onSelect'        : function(event, ID, fileObj) {
+        if($('.uploadifyQueueItem', $(event.target).siblings('.uploadifyQueue')).length >= %s) {
+          $(this).uploadifyCancel(ID);
+        }
+      },
       'onComplete'      : function(event, ID, fileObj, response, data) {
         if(response.match(/^error/i)) {
           %s(response.substr(6));
@@ -146,6 +151,7 @@ EOF
             , $this->getOption('max')
             , json_encode(array_merge(array('folder' => $this->getOption('path')), $this->getOption('scriptData') ? $this->getOption('scriptData') : array()))
             , $this->getOption('sizeLimit') ? $this->getOption('sizeLimit') : "null"
+            , $this->getOption('max')
             , $this->getOption('alertFunction')
             , $this->getOption('multi') ? 'true' : 'false'
             , $this->getOption('alertFunction')
