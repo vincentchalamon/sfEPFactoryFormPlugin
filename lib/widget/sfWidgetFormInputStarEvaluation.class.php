@@ -44,7 +44,7 @@ class sfWidgetFormInputStarEvaluation extends sfWidgetFormInputHidden
     o = $("#%s_star").attach(%s);
   });
 </script>
-<div id="%s_star"
+<div id="%s_star"></div>
 EOF
             , $this->getOption('max')
             , $this->getOption('size')
