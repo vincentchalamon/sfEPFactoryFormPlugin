@@ -87,6 +87,7 @@ EOF
     return sprintf(<<<EOF
 <script type="text/javascript">
   $(document).ready(function() {
+    var ignore = [];
     $('%s').uploadify({
       'uploader'        : '/sfEPFactoryFormPlugin/uploadify/uploadify.swf',
       'expressInstall'  : '/sfEPFactoryFormPlugin/uploadify/expressInstall.swf',
@@ -105,6 +106,7 @@ EOF
       'sizeLimit'       : %s,
       'onSelect'        : function(event, ID, fileObj) {
         if($('.uploadifyQueueItem', $(event.target).siblings('.uploadifyQueue')).length >= %s) {
+          ignore.push(ID);
           $(this).uploadifyCancel(ID);
         }
       },
@@ -112,7 +114,7 @@ EOF
         if(response.match(/^error/i)) {
           %s(response.substr(6));
         }
-        else {
+        else if(!ignore.inArray(ID)) {
           $(event.target).val(%s ? $(event.target).val() + ($(event.target).val().length ? ";" : "") + response : response);
           $('#' + $(event.target).attr('id') + ID).append('<span style="display: none" class="value">' + response + '</span>');
         }
@@ -163,7 +165,7 @@ EOF
   }
 
   public function getJavaScripts() {
-    return array('/sfEPFactoryFormPlugin/js/jquery.min.js', '/sfEPFactoryFormPlugin/uploadify/swfobject.js', '/sfEPFactoryFormPlugin/uploadify/jquery.uploadify.v2.1.4.min.js');
+    return array('/sfEPFactoryFormPlugin/js/jquery.min.js', '/sfEPFactoryFormPlugin/uploadify/swfobject.js', '/sfEPFactoryFormPlugin/uploadify/jquery.uploadify.v2.1.4.min.js', '/sfEPFactoryFormPlugin/js/array.js');
   }
 
   public function getStylesheets() {
