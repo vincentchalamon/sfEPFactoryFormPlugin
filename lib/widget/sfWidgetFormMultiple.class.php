@@ -6,12 +6,14 @@ class sfWidgetFormMultiple extends sfWidgetForm {
     $this->addRequiredOption('widgets');
     $this->addOption("template", "<div class='template widget_multiple_element'>%%widgets%%<a href='#' class='retirer'>-</a><a href='#' class='ajouter'>+</a></div>");
     $this->addOption("last_template", "<div class='template widget_multiple_element'>%%widgets%%<a href='#' class='retirer'>-</a><a href='#' class='ajouter'>+</a></div>");
-    $this->addOption("widget_template", "<div class='widget_template %%widgetClass%%'>%%label%%%%input%%</div>");
+    $this->addOption("widget_template", "<div class='widget_template %%widgetClass%%'>%%label%%%%input%%%%help%%</div>");
+    $this->addOption("help_template", "<span class='help'>%%content%%</span>");
 
     //Gestion add_empty FALSE
     $this->addOption("empty_add_label", '<div class="widget_multiple_empty_add_label"><a href="" title="Ajouter" class="ajouter">Ajouter</a></div>');
     $this->addOption("add_empty", false);
     $this->addOption("callback");
+    $this->addOption("helps", array());
 
     //Gestion d'un max
     $this->addOption("max_number", null);
@@ -46,6 +48,16 @@ class sfWidgetFormMultiple extends sfWidgetForm {
   public function getWidget($name) {
     $widgets = $this->getOption("widgets");
     return isset($widgets[$name]) ? $widgets[$name] : false;
+  }
+
+  /**
+   *
+   * @param string $name
+   * @return string
+   */
+  protected function renderHelp($name) {
+    $helps = $this->getOption('helps');
+    return isset($helps[$name]) ? str_ireplace("%%content%%", $helps[$name], $this->getOption("help_template")) : null;
   }
 
   public function render($name, $value = null, $attributes = array(), $errors = array()) {
@@ -103,7 +115,7 @@ class sfWidgetFormMultiple extends sfWidgetForm {
       else {
         $attributes['class'] = "noTransform";
       }
-      $html.= $widget->isHidden() ? $widget->render($name."[$count][$widgetName]", $widgetValue, $attributes) : str_ireplace(array("%%label%%", "%%input%%", "%%widgetClass%%"), array(!$widget->getOption("label") ? null : $this->renderContentTag("label", $widget->getLabel(), array('for' => $widget->generateId($name."[$count][$widgetName]"))), $widget->render($name."[$count][$widgetName]", $widgetValue, $attributes), $widget->getAttribute("widgetClass")), $this->getOption("widget_template"));
+      $html.= $widget->isHidden() ? $widget->render($name."[$count][$widgetName]", $widgetValue, $attributes) : str_ireplace(array("%%label%%", "%%input%%", "%%widgetClass%%", "%%help%%"), array(!$widget->getOption("label") ? null : $this->renderContentTag("label", $widget->getLabel(), array('for' => $widget->generateId($name."[$count][$widgetName]"))), $widget->render($name."[$count][$widgetName]", $widgetValue, $attributes), $widget->getAttribute("widgetClass"), $this->renderHelp($widgetName)), $this->getOption("widget_template"));
     }
 
     $render = str_ireplace("%%widgets%%", $html, $this->getOption($template));
