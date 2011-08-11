@@ -26,6 +26,7 @@ class sfWidgetFormKeyboard extends sfWidgetForm {
     $this->addOption("renderer_options", array());
     $this->addOption('theme', '/sfEPFactoryFormPlugin/jqueryui/smoothness/jquery-ui.css');
     $this->addOption('url', null);
+    $this->addOption('multi', false);
     $this->addOption('caching', true);
   }
 
@@ -54,7 +55,7 @@ class sfWidgetFormKeyboard extends sfWidgetForm {
         }
         $(element).change();
       }
-    })%s;
+    })%s%s;
   });
 </script>
 EOF
@@ -62,17 +63,38 @@ EOF
             , $this->generateId($name, $value)
             , $this->getOption("layout")
             , $this->getOption("maxLength")
+            , $this->getOption("multi") ? ".addClass('multi')" : null
             , $this->getOption('url') ? sprintf(<<<EOF
 .autocomplete({
+      focus: function(event, ui){
+        if($(this).hasClass('multi')) {
+          return false;
+        }
+      },
+      select: function(event, ui){
+        if($(this).hasClass('multi')) {
+          var terms = this.value.split(/,\s*/);
+          terms.pop();
+          terms.push(ui.item.value);
+          terms.push("");
+          $(this).data('keyboard').\$preview.val(terms.join(", ")).focus();
+          return false;
+        }
+      },
       source: function(request, response){
         var xhr = null;
+        var value = request.term;
+        if($(this.element).hasClass('multi')) {
+          value = value.split(/,\s*/);
+          value = value.length ? value[value.length-1] : null;
+        }
         %s
         xhr = $.ajax({
           url: '%s',
           type: 'post',
           dataType: 'json',
           data: {
-            term: request.term
+            q: value
           },
           success: function(data){
             var datas = new Array();
@@ -87,8 +109,8 @@ EOF
     }).addAutocomplete()
 EOF
                             , $this->getOption('caching') && $this->getOption('url') ? sprintf(<<<EOF
-if(request.term in cache_%s) {
-          response(cache_%s[request.term]);
+if(value in cache_%s) {
+          response(cache_%s[value]);
           return;
         }
 EOF
@@ -96,7 +118,7 @@ EOF
                                             , $this->generateId($name, $value)
                                     ) : null
                             , $this->getOption('url')
-                            , $this->getOption('caching') && $this->getOption('url') ? sprintf('cache_%s[request.term] = datas;', $this->generateId($name, $value)) : null
+                            , $this->getOption('caching') && $this->getOption('url') ? sprintf('cache_%s[value] = datas;', $this->generateId($name, $value)) : null
                     ) : null
     ).$widget->render($name, $value, $attributes, $errors);
   }

@@ -104,7 +104,16 @@ $.fn.addAutocomplete = function(){
 			case keyCode.ENTER:
 			case keyCode.NUMPAD_ENTER:
 				t = base.$autocomplete.menu.element.find('#ui-active-menuitem').text() || '';
-				if (t !== '') { base.$preview.val(t); }
+                if(t !== '') {
+                  if(base.$el.hasClass('multi')) {
+                    var terms = base.$preview.val().split(/,\s*/);
+                    terms.pop();
+                    terms.push(t);
+                    terms.push("");
+                    t = terms.join(", ");
+                  }
+                  base.$preview.val(t).focus();
+                }
 				break;
 			default:
 				// keypress is triggered before the input value is changed
