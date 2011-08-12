@@ -236,5 +236,3 @@ jQuery.fn.selectToUISlider = function(settings){
 	
 	return this;
 }
-
-

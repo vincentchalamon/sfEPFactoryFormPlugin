@@ -10,6 +10,7 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
     $this->addOption('checkScript');
     $this->addOption('fileExt');
     $this->addOption('fileDesc');
+    $this->addOption('is_image', false);
     $this->addOption('multi', false);
     $this->addOption('max', 999);
     $this->addOption('scriptData');
@@ -115,6 +116,9 @@ EOF
           %s(response.substr(6));
         }
         else if(!ignore.inArray(ID)) {
+          if(%s) {
+            $('#' + $(event.target).attr('id') + ID).addClass('hasThumbnail').prepend('<img src="' + response + '" class="thumbnail" />');
+          }
           $(event.target).val(%s ? $(event.target).val() + ($(event.target).val().length ? ";" : "") + response : response);
           $('#' + $(event.target).attr('id') + ID).append('<span style="display: none" class="value">' + response + '</span>');
         }
@@ -155,6 +159,7 @@ EOF
             , $this->getOption('sizeLimit') ? $this->getOption('sizeLimit') : "null"
             , $this->getOption('max')
             , $this->getOption('alertFunction')
+            , $this->getOption('is_image') ? 'true' : 'false'
             , $this->getOption('multi') ? 'true' : 'false'
             , $this->getOption('alertFunction')
             , str_ireplace("'", "\'", str_ireplace('%%max%%', $this->getOption('max'), $this->getOption('fullMessage')))

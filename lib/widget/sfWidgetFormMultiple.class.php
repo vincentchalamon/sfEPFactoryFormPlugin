@@ -1,125 +1,148 @@
 <?php
 
+/**
+ * sfWidgetFormMultiple is a widget for multiple widgets in form.
+ *
+ * @package    sfEPFactoryFormPlugin
+ * @subpackage widget
+ * @author     Vincent CHALAMON <vincentchalamon@gmail.com>
+ */
 class sfWidgetFormMultiple extends sfWidgetForm {
 
+  /**
+   * Configure widget
+   * 
+   * @param array $options
+   * @param array $attributes
+   */
   protected function configure($options = array(), $attributes = array()) {
-    $this->addRequiredOption('widgets');
-    $this->addOption("template", "<div class='template widget_multiple_element'>%%widgets%%<a href='#' class='retirer'>-</a><a href='#' class='ajouter'>+</a></div>");
-    $this->addOption("last_template", "<div class='template widget_multiple_element'>%%widgets%%<a href='#' class='retirer'>-</a><a href='#' class='ajouter'>+</a></div>");
-    $this->addOption("widget_template", "<div class='widget_template %%widgetClass%%'>%%label%%%%input%%%%help%%</div>");
-    $this->addOption("help_template", "<span class='help'>%%content%%</span>");
-
-    //Gestion add_empty FALSE
-    $this->addOption("empty_add_label", '<div class="widget_multiple_empty_add_label"><a href="" title="Ajouter" class="ajouter">Ajouter</a></div>');
-    $this->addOption("add_empty", false);
-    $this->addOption("callback");
-    $this->addOption("helps", array());
-
-    //Gestion d'un max
-    $this->addOption("max_number", null);
+    $this->addRequiredOption("widgets");
+    $this->addOption("createLabel", "Créer");
+    $this->addOption("max");
+    $this->addOption("onAdd");
+    $this->addOption("onRemove");
   }
 
+  /**
+   * Get widget javascripts
+   * 
+   * @return array
+   */
   public function getJavaScripts() {
-    $javascripts = array('/sfEPFactoryFormPlugin/js/jquery.min.js', '/sfEPFactoryFormPlugin/widgetMultiple/widgetMultiple.js');
+    $javascripts = array('/sfEPFactoryFormPlugin/js/jquery.min.js', '/sfEPFactoryFormPlugin/jquery-multiple/multiple.jquery.js');
     foreach($this->getOption("widgets") as $widget) {
       $javascripts = array_merge($javascripts, $widget->getJavaScripts());
     }
     return $javascripts;
   }
 
+  /**
+   * Get widget stylesheets
+   * 
+   * @return array
+   */
   public function getStylesheets() {
-    $stylesheets = array('/sfEPFactoryFormPlugin/widgetMultiple/widgetMultiple.css' => 'screen');
+    $stylesheets = array('/sfEPFactoryFormPlugin/jquery-multiple/jquery-multiple.css' => 'screen');
     foreach($this->getOption("widgets") as $widget) {
       $stylesheets = array_merge($stylesheets, $widget->getStylesheets());
     }
     return $stylesheets;
   }
 
-  public function getWidgetOption($name, $option, $default = null) {
-    return $this->getWidget($name) ? $this->getWidget($name)->getOption($option) : $default;
-  }
-
   /**
-   * Retrieve a widget from its name
+   * Render widget
    * 
    * @param string $name Widget name
-   * @return sfWidgetForm
+   * @param mixed $values Widget values (must be null, array or Doctrine_Collection)
+   * @param array $attributes Widget attributes
+   * @param array $errors Widget errors
+   * @return string
    */
-  public function getWidget($name) {
-    $widgets = $this->getOption("widgets");
-    return isset($widgets[$name]) ? $widgets[$name] : false;
+  public function render($name, $values = null, $attributes = array(), $errors = array()) {
+    // Convert values to array
+    if(is_object($values) && $values instanceof Doctrine_Collection) {
+      $values = $values->toArray();
+    }
+    if(!is_array($values)) {
+      $values = array();
+    }
+    // Build rows from existing values
+    $rows = "";
+    foreach($values as $value) {
+      $rows.= $this->renderRow($name, $value);
+    }
+    // Render widget
+    return sprintf(<<<EOF
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#%s_jquery_multiple').multiple({
+      max: %s,
+      onAdd: function(event, object){
+        %s
+      },
+      onRemove: function(event, object){
+        %s
+      }
+    });
+  });
+</script>
+<div id="%s_jquery_multiple" class="jquery-multiple">
+  <a href="#" class="jquery-multiple-create">%s <span class="jquery-multiple-add">+</span></a>
+  <div class="jquery-multiple-source">%s</div>
+  $rows
+</div>
+EOF
+            , $this->generateId($name)
+            , $this->getOption("max") ? (int)$this->getOption("max") : "null"
+            , $this->getOption("onAdd") ? $this->getOption("onAdd") : null
+            , $this->getOption("onRemove") ? $this->getOption("onRemove") : null
+            , $this->generateId($name)
+            , $this->getOption("createLabel")
+            , $this->renderRow($name));
   }
 
   /**
-   *
-   * @param string $name
+   * Render a row of multiple widgets
+   * 
+   * @param string $name Main widget name
+   * @param mixed $value Row value
    * @return string
    */
-  protected function renderHelp($name) {
-    $helps = $this->getOption('helps');
-    return isset($helps[$name]) ? str_ireplace("%%content%%", $helps[$name], $this->getOption("help_template")) : null;
+  protected function renderRow($name, $value = null) {
+    $widgets = "";
+    $position = 0;
+    foreach($this->getOption('widgets') as $widgetName => $widget) {
+      $widgets.= $this->renderElement($widget, $widgetName, $name."[$position][$widgetName]", isset($value[$widgetName]) ? $value[$widgetName] : null);
+      $position++;
+    }
+    return sprintf(<<<EOF
+<div class="jquery-multiple-elements">
+  $widgets
+</div>
+<div class="jquery-multiple-actions">
+  <a href="#" class="jquery-multiple-remove">-</a>
+  <a href="#" class="jquery-multiple-add">+</a>
+</div>
+EOF
+            );
   }
-
-  public function render($name, $value = null, $attributes = array(), $errors = array()) {
-    $return = "";
-    $count = 0;
-    $widgets = $this->getOption("widgets");
-    $maxNum = $this->getOption("max_number");
-
-    if(!is_array($widgets) || !count($widgets)) {
-      throw new sfException("Vous devez passer un tableau de widgets.", 500);
+  
+  protected function renderElement(sfWidgetForm $widget, $widgetName, $name, $value = null) {
+    $attributes = $widget->getAttributes();
+    if(isset($attributes['class'])) {
+      $attributes['class'].= " noTransform";
     }
-
-    // Existing elements
-    if(!is_null($value) && !empty($value) && count($value) > 0) {
-      foreach($value as $i => $object) {
-        //Si pas de add Empty et dernier element on rajoute la ligne avec "last_template"
-        if($i == count($value) - 1 && !$this->getOption("add_empty") && $i < $this->getOption("max_number") - 1) {
-          $return.= $this->addRow($name, $count, $object, "last_template");
-        }
-        // Sinon c'est une ligne normale
-        else {
-          $return.= $this->addRow($name, $count, $object);
-        }
-        $count++;
-      }
+    else {
+      $attributes['class'] = "noTransform";
     }
-    // Si pas de valeurs et pas de "add_empty" on rajoute un champ caché (géré aprés en JS)
-    elseif(!$this->getOption("add_empty")) {
-      $return.= $this->addRow($name, $count, null, "last_template", true);
-    }
-
-    if($this->getOption("add_empty")) {
-      $return .= $this->addRow($name, $count, null, "last_template");
-    }
-
-    return "<div class='widget_multiple'".($this->getOption("callback") ? sprintf(" callback='%s'", $this->getOption("callback")) : null).($maxNum ? " maxnum='$maxNum'" : null).">$return</div>";
+    return sprintf(<<<EOF
+<div class="jquery-multiple-element jquery-multiple-element-$widgetName">
+  %s
+  %s
+</div>
+EOF
+            , $widget->getLabel() ? sprintf('<label for="%s">%s</label>', $widget->generateId($name, $value), $widget->getLabel()) : null
+            , $widget->render($name, $value, $attributes)
+            );
   }
-
-  protected function addRow($name, $count, $object = null, $template = "template", $hidden = false) {
-    $widgets = $this->getOption("widgets");
-    if(!is_array($widgets) || !count($widgets)) {
-      throw new sfException("Vous devez passer un tableau de widgets.", 500);
-    }
-    $html = "";
-
-    foreach($widgets as $widgetName => $widget) {
-      if(!$widget instanceof sfWidgetForm) {
-        throw new sfException("Vous devez passer des instances de sfWidgetForm.", 500);
-      }
-      $widgetValue = $object ? (isset($object[$widgetName]) ? $object[$widgetName] : false) : null;
-      $attributes = $widget->getAttributes();
-      if(isset($attributes['class'])) {
-        $attributes['class'].= " noTransform";
-      }
-      else {
-        $attributes['class'] = "noTransform";
-      }
-      $html.= $widget->isHidden() ? $widget->render($name."[$count][$widgetName]", $widgetValue, $attributes) : str_ireplace(array("%%label%%", "%%input%%", "%%widgetClass%%", "%%help%%"), array(!$widget->getOption("label") ? null : $this->renderContentTag("label", $widget->getLabel(), array('for' => $widget->generateId($name."[$count][$widgetName]"))), $widget->render($name."[$count][$widgetName]", $widgetValue, $attributes), $widget->getAttribute("widgetClass"), $this->renderHelp($widgetName)), $this->getOption("widget_template"));
-    }
-
-    $render = str_ireplace("%%widgets%%", $html, $this->getOption($template));
-    return !$hidden ? $render : $this->getOption("empty_add_label").preg_replace('/(class=["\'][^"\']*widget_multiple_element[^"\']*["\'])/i', "$1 style='display:none;'", $render);
-  }
-
 }

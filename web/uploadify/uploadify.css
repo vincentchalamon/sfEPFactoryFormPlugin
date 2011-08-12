@@ -50,3 +50,24 @@ THE SOFTWARE.
 	height: 3px;
 	width: 1px;
 }
+.uploadifyQueueItem.hasThumbnail {
+    padding: 0;
+    width: 370px;
+    height: 35px;
+}
+.uploadifyQueueItem.hasThumbnail .thumbnail {
+    float: left;
+    height: 35px;
+    width: 35px;
+}
+.uploadifyQueueItem.hasThumbnail .fileName {
+    float: left;
+    margin: 10px 5px 10px 10px;
+}
+.uploadifyQueueItem.hasThumbnail .percentage {
+    float: left;
+    margin: 10px 10px 10px 0;
+}
+.uploadifyQueueItem.hasThumbnail .cancel {
+    margin: 10px 10px 10px 0;
+}
