@@ -31,7 +31,9 @@ class sfWidgetFormMultiple extends sfWidgetForm {
   public function getJavaScripts() {
     $javascripts = array('/sfEPFactoryFormPlugin/js/jquery.min.js', '/sfEPFactoryFormPlugin/jquery-multiple/multiple.jquery.js');
     foreach($this->getOption("widgets") as $widget) {
-      $javascripts = array_merge($javascripts, $widget->getJavaScripts());
+      if(is_object($widget) && $widget instanceof sfWidgetForm) {
+        $javascripts = array_merge($javascripts, $widget->getJavaScripts());
+      }
     }
     return $javascripts;
   }
@@ -44,7 +46,9 @@ class sfWidgetFormMultiple extends sfWidgetForm {
   public function getStylesheets() {
     $stylesheets = array('/sfEPFactoryFormPlugin/jquery-multiple/jquery-multiple.css' => 'screen');
     foreach($this->getOption("widgets") as $widget) {
-      $stylesheets = array_merge($stylesheets, $widget->getStylesheets());
+      if(is_object($widget) && $widget instanceof sfWidgetForm) {
+        $stylesheets = array_merge($stylesheets, $widget->getStylesheets());
+      }
     }
     return $stylesheets;
   }
@@ -112,7 +116,12 @@ EOF
     $widgets = "";
     $position = 0;
     foreach($this->getOption('widgets') as $widgetName => $widget) {
-      $widgets.= $this->renderElement($widget, $widgetName, $name."[$position][$widgetName]", isset($value[$widgetName]) ? $value[$widgetName] : null);
+      if(is_object($widget) && $widget instanceof sfWidgetForm) {
+        $widgets.= $this->renderWidget($widget, $widgetName, $name."[$position][$widgetName]", isset($value[$widgetName]) ? $value[$widgetName] : null);
+      }
+      else {
+        $widgets.= $widget;
+      }
       $position++;
     }
     return sprintf(<<<EOF
@@ -127,7 +136,7 @@ EOF
             );
   }
   
-  protected function renderElement(sfWidgetForm $widget, $widgetName, $name, $value = null) {
+  protected function renderWidget(sfWidgetForm $widget, $widgetName, $name, $value = null) {
     $attributes = $widget->getAttributes();
     if(isset($attributes['class'])) {
       $attributes['class'].= " noTransform";

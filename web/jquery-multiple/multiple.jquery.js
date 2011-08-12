@@ -90,10 +90,10 @@
       var object = source.clone().removeClass('jquery-multiple-source').addClass('jquery-multiple-row');
       var id = 1;
       if(source.siblings('.jquery-multiple-row').length) {
-        var ids = $('input, textarea, select', source.siblings('.jquery-multiple-row:last')).attr('name').match(/(\d+)/ig);
+        var ids = $('input[name], textarea[name], select[name]', source.siblings('.jquery-multiple-row:last')).attr('name').match(/(\d+)/ig);
         id = parseInt(ids.length ? ids[ids.length-1] : -1)+1;
       }
-      $('input, textarea, select, label', object).val('').removeAttr('checked').each(function(){
+      $('input[name][id], textarea[name][id], select[name][id], label[for]', object).val('').removeAttr('checked').each(function(){
         var multiples = $(self).parents('.jquery-multiple').length;
         var pattern = "(.*";
         if(multiples) {
