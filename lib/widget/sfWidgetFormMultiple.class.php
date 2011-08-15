@@ -19,6 +19,7 @@ class sfWidgetFormMultiple extends sfWidgetForm {
     $this->addRequiredOption("widgets");
     $this->addOption("createLabel", "Créer");
     $this->addOption("max");
+    $this->addOption("min");
     $this->addOption("onAdd");
     $this->addOption("onRemove");
   }
@@ -70,10 +71,18 @@ class sfWidgetFormMultiple extends sfWidgetForm {
     if(!is_array($values)) {
       $values = array();
     }
+    $values = array_values($values);
     // Build rows from existing values
     $rows = "";
-    foreach($values as $value) {
-      $rows.= $this->renderRow($name, $value);
+    foreach($values as $count => $value) {
+      if(!$this->getOption("max") || $count <= $this->getOption("max")) {
+        $rows.= sprintf('<div class="jquery-multiple-row">%s</div>', $this->renderRow($name, $value));
+      }
+    }
+    if($this->getOption("min")) {
+      for($i = $this->getOption("min"); $i > count($values); $i--) {
+        $rows.= sprintf('<div class="jquery-multiple-row">%s</div>', $this->renderRow($name));
+      }
     }
     // Render widget
     return sprintf(<<<EOF
@@ -81,6 +90,7 @@ class sfWidgetFormMultiple extends sfWidgetForm {
   $(document).ready(function(){
     $('#%s_jquery_multiple').multiple({
       max: %s,
+      min: %s,
       onAdd: function(event, object){
         %s
       },
@@ -91,18 +101,21 @@ class sfWidgetFormMultiple extends sfWidgetForm {
   });
 </script>
 <div id="%s_jquery_multiple" class="jquery-multiple">
-  <a href="#" class="jquery-multiple-create">%s <span class="jquery-multiple-add">+</span></a>
+  <a href="#" class="jquery-multiple-create"%s>%s <span class="jquery-multiple-add">+</span></a>
   <div class="jquery-multiple-source">%s</div>
   $rows
 </div>
 EOF
             , $this->generateId($name)
             , $this->getOption("max") ? (int)$this->getOption("max") : "null"
+            , $this->getOption("min") ? (int)$this->getOption("min") : "null"
             , $this->getOption("onAdd") ? $this->getOption("onAdd") : null
             , $this->getOption("onRemove") ? $this->getOption("onRemove") : null
             , $this->generateId($name)
+            , strlen($rows) ? ' style="display: none;"' : null
             , $this->getOption("createLabel")
-            , $this->renderRow($name));
+            , $this->renderRow($name)
+            );
   }
 
   /**

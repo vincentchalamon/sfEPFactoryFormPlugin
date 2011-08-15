@@ -41,8 +41,13 @@
     var self = this;
     this.settings = $.extend({
       max: null,
-      maxMessage: "Vous ne pouvez plus ajouter d'éléments (%max% maximum).",
+      maxMessage: "Vous ne pouvez pas ajouter d'éléments (%max% maximum).",
       onMax: function(message){
+        alert(message);
+      },
+      min: null,
+      minMessage: "Vous ne pouvez pas supprimer d'éléments (%min% minimum).",
+      onMin: function(message){
         alert(message);
       },
       onAdd: function(event, object){},
@@ -71,6 +76,10 @@
      * Remove an element
      */
     this.remove = function(event){
+      if(self.settings.min !== null && $('.jquery-multiple-row', $(self)).length == self.settings.min) {
+        self.settings.onMin(self.settings.minMessage.replace(/%min%/i, self.settings.min));
+        return;
+      }
       var object = $(event.target).parents('.jquery-multiple-row:first').remove();
       if($('.jquery-multiple-row', $(self)).length == 0) {
         $('.jquery-multiple-create', $(self)).show();
@@ -82,11 +91,11 @@
      * Duplicate source to an element
      */
     this._duplicate = function(){
-      var source = $('.jquery-multiple-source', $(self));
       if(self.settings.max !== null && $('.jquery-multiple-row', $(self)).length == self.settings.max) {
         self.settings.onMax(self.settings.maxMessage.replace(/%max%/i, self.settings.max));
         return;
       }
+      var source = $('.jquery-multiple-source', $(self));
       var object = source.clone().removeClass('jquery-multiple-source').addClass('jquery-multiple-row');
       var id = 1;
       if(source.siblings('.jquery-multiple-row').length) {
