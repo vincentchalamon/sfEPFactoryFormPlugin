@@ -146,8 +146,7 @@
         event.preventDefault();
         self.remove(event);
       });
-      $(self).parents('form:not(.jquery-multiple-waiting)').addClass('jquery-multiple-waiting').live('submit', function(event){
-        event.preventDefault();
+      $(self).parents('form').submit(function(){
         $('.jquery-multiple-source', $(self)).remove();
         $('.jquery-multiple-row', $(self)).each(function(){
           var remove = true;
@@ -160,7 +159,6 @@
             $(this).remove();
           }
         });
-        $(this).submit();
       });
     });
 

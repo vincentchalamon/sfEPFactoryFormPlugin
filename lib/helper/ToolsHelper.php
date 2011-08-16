@@ -10,8 +10,13 @@ function convertDqlToSql(Doctrine_Query $requete) {
   $params = $requete->getParams();
   $query = $requete->getSqlQuery();
   foreach($params['where'] as $param) {
-    $param = htmlspecialchars($param, ENT_QUOTES, sfConfig::get('sf_charset'));
-    $query = join(var_export(is_scalar($param) ? $param : (string) $param, true), explode('?', $query, 2));
+    if(is_array($param)) {
+      $query = join(implode(', ', $param), explode('?', $query, 2));
+    }
+    else {
+      $param = htmlspecialchars($param, ENT_QUOTES, sfConfig::get('sf_charset'));
+      $query = join(var_export(is_scalar($param) ? $param : (string)$param, true), explode('?', $query, 2));
+    }
   }
   return $query;
 }
