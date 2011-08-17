@@ -76,12 +76,12 @@ class sfWidgetFormMultiple extends sfWidgetForm {
     $rows = "";
     foreach($values as $count => $value) {
       if(!$this->getOption("max") || $count <= $this->getOption("max")) {
-        $rows.= sprintf('<div class="jquery-multiple-row">%s</div>', $this->renderRow($name, $value));
+        $rows.= sprintf('<div class="jquery-multiple-row">%s</div>', $this->renderRow($name, $count, $value));
       }
     }
     if($this->getOption("min")) {
       for($i = $this->getOption("min"); $i > count($values); $i--) {
-        $rows.= sprintf('<div class="jquery-multiple-row">%s</div>', $this->renderRow($name));
+        $rows.= sprintf('<div class="jquery-multiple-row">%s</div>', $this->renderRow($name, $i-count($values)));
       }
     }
     // Render widget
@@ -125,9 +125,8 @@ EOF
    * @param mixed $value Row value
    * @return string
    */
-  protected function renderRow($name, $value = null) {
+  protected function renderRow($name, $position = 0, $value = null) {
     $widgets = "";
-    $position = 0;
     foreach($this->getOption('widgets') as $widgetName => $widget) {
       if(is_object($widget) && $widget instanceof sfWidgetForm) {
         $widgets.= $this->renderWidget($widget, $widgetName, $name."[$position][$widgetName]", isset($value[$widgetName]) ? $value[$widgetName] : null);
@@ -135,7 +134,6 @@ EOF
       else {
         $widgets.= $widget;
       }
-      $position++;
     }
     return sprintf(<<<EOF
 <div class="jquery-multiple-elements">
@@ -145,18 +143,13 @@ EOF
   <a href="#" class="jquery-multiple-remove">-</a>
   <a href="#" class="jquery-multiple-add">+</a>
 </div>
+<div style="clear: both;"></div>
 EOF
             );
   }
   
   protected function renderWidget(sfWidgetForm $widget, $widgetName, $name, $value = null) {
     $attributes = $widget->getAttributes();
-    if(isset($attributes['class'])) {
-      $attributes['class'].= " noTransform";
-    }
-    else {
-      $attributes['class'] = "noTransform";
-    }
     return sprintf(<<<EOF
 <div class="jquery-multiple-element jquery-multiple-element-$widgetName">
   %s

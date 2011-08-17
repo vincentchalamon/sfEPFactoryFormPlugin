@@ -29,6 +29,7 @@ class sfWidgetFormDateJQueryUI extends sfWidgetFormInputText
     $this->addOption('number_of_months', 1);
     $this->addOption('show_button_panel', false);
     $this->addOption('show_previous_dates', true);
+    $this->addOption('use_mask', true);
     $this->addOption('theme', '/sfEPFactoryFormPlugin/jqueryui/smoothness/jquery-ui.css');
     parent::configure($options, $attributes);
   }
@@ -52,7 +53,7 @@ class sfWidgetFormDateJQueryUI extends sfWidgetFormInputText
 <script type="text/javascript">
 $(function() {
   %s
-  $("#%s").datepicker({
+  $("#%s")%s.datepicker({
     regional : '%s',
     changeMonth : %s,
     changeYear : %s,
@@ -66,6 +67,7 @@ $(function() {
 EOF
             , $this->getOption('culture') != "en" ? "$.datepicker.regional['".$this->getOption('culture')."'];" : null
             , $this->generateId($name, $value)
+            , $this->getOption('use_mask') ? ".mask('99/99/9999')" : null
             , $this->getOption('culture')
             , $this->getOption("change_month") ? "true" : "false"
             , $this->getOption("change_year") ? "true" : "false"
@@ -97,6 +99,9 @@ EOF
     $culture = $this->getOption('culture');
     if($culture != 'en') {
       $js[] = "/sfEPFactoryFormPlugin/jqueryui/i18n/ui.datepicker-$culture.js";
+    }
+    if($this->getOption('use_mask')) {
+      $js[] = "/sfEPFactoryFormPlugin/js/jquery.maskedinput.min.js";
     }
     return $js;
   }
