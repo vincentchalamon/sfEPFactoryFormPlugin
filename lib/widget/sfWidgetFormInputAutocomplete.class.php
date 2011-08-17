@@ -12,19 +12,19 @@ class sfWidgetFormInputAutocomplete extends sfWidgetFormInputText
     parent::configure($options, $attributes);
     $this->addRequiredOption('url');
     $this->setOption('is_hidden', false);
-    $this->addOption('multi', false);
+    $this->addOption('multiple', false);
     $this->addOption('caching', false);
     $this->addOption('theme', '/sfEPFactoryFormPlugin/jqueryui/smoothness/jquery-ui.css');
   }
   
   public function render($name, $value = null, $attributes = array(), $errors = array())
   {
-    if($this->getOption("multi")) {
+    if($this->getOption("multiple")) {
       if(isset($attributes['class'])) {
-        $attributes['class'].= " multi";
+        $attributes['class'].= " multiple";
       }
       else {
-        $attributes['class'] = "multi";
+        $attributes['class'] = "multiple";
       }
     }
     return sprintf(<<<EOF
@@ -32,12 +32,12 @@ class sfWidgetFormInputAutocomplete extends sfWidgetFormInputText
   $(document).ready(function(){
     $("#%s").autocomplete({
       focus: function(event, ui){
-        if($(this).hasClass('multi')) {
+        if($(this).hasClass('multiple')) {
           return false;
         }
       },
       select: function(event, ui){
-        if($(this).hasClass('multi')) {
+        if($(this).hasClass('multiple')) {
           var terms = $(this).val().split(/,\s*/);
           terms.pop();
           terms.push(ui.item.value);
@@ -49,7 +49,7 @@ class sfWidgetFormInputAutocomplete extends sfWidgetFormInputText
       source: function(request, response){
         var xhr = null;
         var value = request.term;
-        if($(this.element).hasClass('multi')) {
+        if($(this.element).hasClass('multiple')) {
           value = value.split(/,\s*/);
           value = value.length ? value[value.length-1] : null;
         }
