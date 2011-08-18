@@ -52,7 +52,8 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
             $hash.= strtoupper(chr(rand(65, 90)));
           }
           $render.= sprintf(<<<EOF
-  <div class="uploadifyQueueItem completed">
+  <div class="uploadifyQueueItem completed%s">
+    %s
     <div class="cancel">
       <a href="#" rel="%s">
         <img border="0" src="/sfEPFactoryFormPlugin/uploadify/cancel.png" />
@@ -62,6 +63,8 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
     <span class="percentage"> - Completed</span>
   </div>
 EOF
+                  , $this->getOption('is_image') ? ' hasThumbnail' : null
+                  , $this->getOption('is_image') ? '<img src="'.$filename.'" class="thumbnail" />' : null
                   , $filename
                   , strlen(basename($filename)) > 20 ? substr(basename($filename), 0, 20)."..." : basename($filename)
                   , filesize(sfConfig::get('sf_web_dir').$filename)/1000

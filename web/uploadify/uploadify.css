@@ -62,12 +62,12 @@ THE SOFTWARE.
 }
 .uploadifyQueueItem.hasThumbnail .fileName {
     float: left;
-    margin: 10px 5px 10px 10px;
+    margin: 10px 5px 10px 5px;
 }
 .uploadifyQueueItem.hasThumbnail .percentage {
     float: left;
     margin: 10px 10px 10px 0;
 }
 .uploadifyQueueItem.hasThumbnail .cancel {
-    margin: 10px 10px 10px 0;
+    margin: 10px 5px 10px 0;
 }

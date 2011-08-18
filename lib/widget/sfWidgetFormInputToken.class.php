@@ -10,7 +10,7 @@ class sfWidgetFormInputToken extends sfWidgetFormInputText {
   public function render($name, $value = null, $attributes = array(), $errors = array()) {
     $values = "";
     if(is_string($value)) {
-      $value = strlen($value) ? explode(',', $value) : array();
+      $value = strlen($value) ? explode(', ', $value) : array();
     }
     foreach($value as $object) {
       $values.= sprintf('{id: "%s", name: "%s"},', $object, $object);
