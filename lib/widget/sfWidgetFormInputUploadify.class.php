@@ -4,7 +4,8 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
 {
   protected function configure($options = array(), $attributes = array()) {
     parent::configure($options, $attributes);
-    $this->addRequiredOption('url');
+    sfContext::getInstance()->getConfiguration()->loadHelpers('Url');
+    $this->addOption('url', url_for('@sfEPFactoryFormUploadify'));
     $this->addOption('path', '/uploads');
     $this->addOption('buttonText', 'Parcourir...');
     $this->addOption('checkScript');
