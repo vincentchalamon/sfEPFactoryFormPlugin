@@ -1,0 +1,4 @@
+uploadify:
+  url:   /uploadify
+  param: { module: sfEPFactoryForm, action: uploadify }
+  requirements: { sf_method: [post] }

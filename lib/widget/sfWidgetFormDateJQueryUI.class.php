@@ -29,6 +29,7 @@ class sfWidgetFormDateJQueryUI extends sfWidgetFormInputText
     $this->addOption('number_of_months', 1);
     $this->addOption('show_button_panel', false);
     $this->addOption('show_previous_dates', true);
+    $this->addOption('inline', false);
     $this->addOption('theme', '/sfEPFactoryFormPlugin/jqueryui/smoothness/jquery-ui.css');
     parent::configure($options, $attributes);
   }
@@ -47,6 +48,42 @@ class sfWidgetFormDateJQueryUI extends sfWidgetFormInputText
   {
     if(preg_match("/(\d{4})-(\d{2})-(\d{2})/", $value)) {
       $value = substr($value, 8, 2).'/'.substr($value, 5, 2).'/'.substr($value, 0, 4);
+    }
+    if($this->getOption('inline')) {
+      $widget = new sfWidgetFormInputHidden();
+      return sprintf(<<<EOF
+<div id="%s_datepicker"></div>
+%s
+<script type="text/javascript">
+$(function() {
+  %s
+  $("#%s_datepicker").datepicker({
+    regional : '%s',
+    changeMonth : %s,
+    changeYear : %s,
+    numberOfMonths : %s,
+    dateFormat: 'dd/mm/yy',
+    showButtonPanel : %s,
+    minDate: %s,
+    onSelect: function(dateText, inst){
+      $("#%s").val(dateText);
+    }
+  });
+});
+</script>
+EOF
+              , $this->generateId($name, $value)
+              , $widget->render($name, $value, $attributes, $errors)
+              , $this->getOption('culture') != "en" ? "$.datepicker.regional['".$this->getOption('culture')."'];" : null
+              , $this->generateId($name, $value)
+              , $this->getOption('culture')
+              , $this->getOption("change_month") ? "true" : "false"
+              , $this->getOption("change_year") ? "true" : "false"
+              , $this->getOption("number_of_months")
+              , $this->getOption("show_button_panel") ? "true" : "false"
+              , $this->getOption("show_previous_dates") ? "null" : "new Date()"
+              , $this->generateId($name, $value)
+              );
     }
     return parent::render($name, $value, $attributes, $errors).sprintf(<<<EOF
 <script type="text/javascript">
