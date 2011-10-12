@@ -32,10 +32,10 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
       throw new InvalidArgumentException(get_class($this)." requires scriptData to be array.");
     }
     if(isset($attributes['class'])) {
-      $attributes['class'].= " uploadify";
+      $attributes['class'].= " uploadify noTransform";
     }
     else {
-      $attributes['class'] = "uploadify";
+      $attributes['class'] = "uploadify noTransform";
     }
     if(is_array($value)) {
       $value = implode(";", $value);
