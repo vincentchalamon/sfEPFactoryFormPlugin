@@ -1055,7 +1055,7 @@ $.keyboard = function(el, options){
 	};
 
 	// for checking combos
-	$.keyboard.comboRegex = /([`\'~\^\"ao])([a-z])/mig;
+	$.keyboard.comboRegex = /([`~\^\"ao])([a-z])/mig;
 
 	$.fn.keyboard = function(options){
 		return this.each(function(){
