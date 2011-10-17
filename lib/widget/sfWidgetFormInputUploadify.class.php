@@ -135,8 +135,7 @@ EOF
         return false;
       },
       'onError'         : function(event, ID, fileObj, errorObj) {
-        %s('%s');
-        return false;
+        %s('%s : ' + errorObj.type + ' : ' + errorObj.info);
       }
     });
     $('%s').siblings('.uploadifyQueueCustom').find('.cancel a').click(function(event){
