@@ -1,21 +1,5 @@
 <?php
 
-/*
- * This file is part of the symfony package.
- * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-/**
- * sfValidatorUrl validates Urls.
- *
- * @package    symfony
- * @subpackage validator
- * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfValidatorUrl.class.php 22149 2009-09-18 14:09:53Z Kris.Wallsmith $
- */
 class sfValidatorUrlCustom extends sfValidatorRegex
 {
   const REGEX_URL_FORMAT = "~^(/([A-z\d\_\-/#]+)?)|(@[A-z\_\-\d]+)|([A-z\_\-\d]+/[A-z\_\-\d]+)|((%s)://(([a-z0-9-]+\.)+[a-z]{2,6}|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:[0-9]+)?(/?|/\S+))$~ix";

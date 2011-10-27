@@ -6,6 +6,8 @@ class sfWidgetFormInputCkeditor extends sfWidgetFormTextarea
     parent::configure($options, $attributes);
     $this->addOption('width', 635);
     $this->addOption('height', 400);
+    $this->addOption('filemanager_path', "/uploads");
+    $this->addOption('toolbar', "Custom");
   }
 
   public function render($name, $value = null, $attributes = array(), $errors = array())
@@ -20,13 +22,17 @@ class sfWidgetFormInputCkeditor extends sfWidgetFormTextarea
 <script type="text/javascript">
   CKEDITOR.replace('%s', {
     width: %s,
-    height: %s
+    height: %s,
+    filebrowserBrowseUrl: "/sfEPFactoryFormPlugin/ckeditor/filemanager/index.html?path=%s",
+    toolbar: "%s"
   });
 </script>
 EOF
             , $this->generateId($name, $value)
             , $this->getOption('width')
             , $this->getOption('height')
+            , $this->getOption('filemanager_path')
+            , $this->getOption("toolbar")
             );
   }
 

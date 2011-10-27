@@ -1,4 +1,5 @@
 <?php
+
 class sfValidatorMultiple extends sfValidatorBase
 {
   protected function configure($options = array(), $messages = array())

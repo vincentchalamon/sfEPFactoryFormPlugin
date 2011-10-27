@@ -1,7 +1,5 @@
 <?php
-/**
-* 
-*/
+
 class sfValidatorHourCustom extends sfValidatorTime
 {
   protected function doClean($value) {

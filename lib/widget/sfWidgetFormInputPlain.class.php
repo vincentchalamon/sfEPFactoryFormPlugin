@@ -1,19 +1,5 @@
 <?php
-/*
- * This file is part of the HLW package.
- * (c) Daniel Santiago <daniel.santiago@highlevelwebs.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-/**
- * sfWidgetFormInputPlain represents a hidden HTML input tag with a span element with the value.
- *
- * @package    symfony
- * @subpackage widget
- * @author     Daniel Santiago <daniel.santiago@highlevelwebs.com>
- * @version    SVN: $Id: sfWidgetFormInputPlain.class.php 68 2009-06-19 04:33:41Z hlwebs $
- */
+
 class sfWidgetFormInputPlain extends sfWidgetFormInputHidden
 {
   /**

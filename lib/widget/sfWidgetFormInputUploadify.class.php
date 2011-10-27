@@ -123,6 +123,10 @@ EOF
           if(%s) {
             $('#' + $(event.target).attr('id') + ID).addClass('hasThumbnail').prepend('<img src="' + response + '" class="thumbnail" />');
           }
+          // S'il n'est pas multiple, qu'il est éditable et qu'il a déjà une valeur : supprimer la div correspondante
+          if(%s && %s && $(event.target).val().length) {
+            $('#' + $(event.target).attr('id') + '_listQueue_custom .uploadifyQueueItem .cancel a').click();
+          }
           $(event.target).val(%s ? $(event.target).val() + ($(event.target).val().length ? ";" : "") + response : response);
           $('#' + $(event.target).attr('id') + ID).append('<span style="display: none" class="value">' + response + '</span>');
         }
@@ -163,6 +167,8 @@ EOF
             , $this->getOption('max')
             , $this->getOption('alertFunction')
             , $this->getOption('is_image') ? 'true' : 'false'
+            , $this->getOption('multi') ? 'false' : 'true'
+            , $this->getOption('editable') ? 'true' : 'false'
             , $this->getOption('multi') ? 'true' : 'false'
             , $this->getOption('alertFunction')
             , str_ireplace("'", "\'", str_ireplace('%%max%%', $this->getOption('max'), $this->getOption('fullMessage')))

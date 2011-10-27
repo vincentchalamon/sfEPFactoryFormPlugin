@@ -1,4 +1,5 @@
 <?php
+
 class sfWidgetFormInputDoctrineAutocomplete extends sfWidgetFormInputAutocomplete
 {
   /**

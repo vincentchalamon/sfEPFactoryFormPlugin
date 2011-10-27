@@ -1,4 +1,5 @@
 <?php
+
 class sfWidgetFormInputAutocomplete extends sfWidgetFormInputText
 {
   /**
@@ -82,7 +83,7 @@ if(value in cache_%s) {
           return;
         }
 EOF
-                    , $this->generateId($name, $value), $this->generateId($name, $value)) : null
+            , $this->generateId($name, $value), $this->generateId($name, $value)) : null
             , $this->getOption("url")
             , $this->getOption('caching') ? sprintf('cache_%s[value] = datas;', $this->generateId($name, $value)) : null
             ).parent::render($name, $value, $attributes, $errors);

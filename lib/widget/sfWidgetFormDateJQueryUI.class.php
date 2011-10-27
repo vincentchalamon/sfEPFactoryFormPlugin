@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @author     Artur Rozek
- * @version    1.0.0
- */
 class sfWidgetFormDateJQueryUI extends sfWidgetFormInputText
 {
 

@@ -2,7 +2,7 @@
 
 class BasesfEPFactoryFormActions extends sfActions
 {
-  public function executeUploadify($request)
+  public function executeUploadify(sfWebRequest $request)
   {
     $this->forward404Unless($request->isMethod("post"));
     sfConfig::set('sf_web_debug', false);

@@ -1,22 +1,5 @@
 <?php
 
-/**
- * sfWidgetFormKeyboard represents a virtual keyboard.
- *
- * Available options:
- *
- *  * layout:           Keyboard layout (default: "arabic-azerty")
- *  * maxLength:        Input max length (default: "false")
- *  * renderer_class:   Widget rendering (default: "sfWidgetFormInputText")
- *  * renderer_options: Widget options (default: array())
- *  * theme:            jQuery path to css theme (default: "/sfEPFactoryFormPlugin/jqueryui/smoothness/jquery-ui.css")
- *  * url:              Url for autocomplete
- *
- * @package    symfony
- * @subpackage widget
- * @author     Daniel Santiago <daniel.santiago@highlevelwebs.com>
- * @version    SVN: $Id: sfWidgetFormInputPlain.class.php 68 2009-06-19 04:33:41Z hlwebs $
- */
 class sfWidgetFormKeyboard extends sfWidgetForm {
 
   protected function configure($options = array(), $attributes = array()) {
