@@ -43,7 +43,7 @@ class sfWidgetFormInputAutocomplete extends sfWidgetFormInputText
           terms.pop();
           terms.push(ui.item.value);
           terms.push("");
-          $(this).val(terms.join(", ")).focus();
+          $(this).val(terms.join(", ").replace(/(.*), $/, "$1")).focus();
           return false;
         }
       },
@@ -86,7 +86,7 @@ EOF
             , $this->generateId($name, $value), $this->generateId($name, $value)) : null
             , $this->getOption("url")
             , $this->getOption('caching') ? sprintf('cache_%s[value] = datas;', $this->generateId($name, $value)) : null
-            ).parent::render($name, $value, $attributes, $errors);
+            ).parent::render($name, $this->getOption("multiple") ? implode(", ", $value) : $value, $attributes, $errors);
   }
 
   /*
