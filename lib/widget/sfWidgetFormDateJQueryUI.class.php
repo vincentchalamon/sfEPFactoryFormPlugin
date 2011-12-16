@@ -26,6 +26,7 @@ class sfWidgetFormDateJQueryUI extends sfWidgetFormInputText
     $this->addOption('show_button_panel', false);
     $this->addOption('show_previous_dates', true);
     $this->addOption('inline', false);
+    $this->addOption('mask', false);
     $this->addOption('theme', '/sfEPFactoryFormPlugin/jqueryui/smoothness/jquery-ui.css');
     parent::configure($options, $attributes);
   }
@@ -62,9 +63,10 @@ $(function() {
     showButtonPanel : %s,
     minDate: %s,
     onSelect: function(dateText, inst){
-      $("#%s").val(dateText);
+      $("#%s").val(dateText).trigger('change');
     }
   });
+  %s
 });
 </script>
 EOF
@@ -79,6 +81,7 @@ EOF
               , $this->getOption("show_button_panel") ? "true" : "false"
               , $this->getOption("show_previous_dates") ? "null" : "new Date()"
               , $this->generateId($name, $value)
+              , $this->getOption("mask") ? sprintf("$(\"#%s\").mask('99/99/9999');", $this->generateId($name, $value)) : null
               );
     }
     return parent::render($name, $value, $attributes, $errors).sprintf(<<<EOF
@@ -94,6 +97,7 @@ $(function() {
     showButtonPanel : %s,
     minDate: %s
   });
+  %s
 });
 </script>
 EOF
@@ -105,6 +109,7 @@ EOF
             , $this->getOption("number_of_months")
             , $this->getOption("show_button_panel") ? "true" : "false"
             , $this->getOption("show_previous_dates") ? "null" : "new Date()"
+            , $this->getOption("mask") ? sprintf("$(\"#%s\").mask('99/99/9999');", $this->generateId($name, $value)) : null
             );
   }
 
@@ -130,6 +135,9 @@ EOF
     $culture = $this->getOption('culture');
     if($culture != 'en') {
       $js[] = "/sfEPFactoryFormPlugin/jqueryui/i18n/ui.datepicker-$culture.js";
+    }
+    if($this->getOption("mask")) {
+      $js[] = "/sfEPFactoryFormPlugin/js/jquery.maskedinput.min.js";
     }
     return $js;
   }
