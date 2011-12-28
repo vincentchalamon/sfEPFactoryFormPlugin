@@ -11,6 +11,8 @@ class sfWidgetFormInputDoctrineAutocomplete extends sfWidgetFormInputAutocomplet
   protected function configure($options = array(), $attributes = array())
   {
     parent::configure($options, $attributes);
+    sfContext::getInstance()->getConfiguration()->loadHelpers('Url');
+    $this->setOption('url', url_for('@sf_epfactory_form_autocomplete'));
     $this->addRequiredOption('model');
     $this->addOption('column');
     $this->addOption('query');
@@ -42,6 +44,17 @@ class sfWidgetFormInputDoctrineAutocomplete extends sfWidgetFormInputAutocomplet
       }
     }
     return parent::render($name, $value, $attributes, $errors);
+  }
+  
+  protected function buildDatas()
+  {
+    return sprintf(<<<EOF
+%s,
+            model: '%s'
+EOF
+            , parent::buildDatas()
+            , $this->getOption('model').($this->getOption('column') ? ', '.$this->getOption('column') : null)
+            );
   }
 
   /**

@@ -60,7 +60,7 @@ class sfWidgetFormInputAutocomplete extends sfWidgetFormInputText
           type: 'post',
           dataType: 'json',
           data: {
-            q: value
+            %s
           },
           success: function(data){
             var datas = new Array();
@@ -83,10 +83,18 @@ if(value in cache_%s) {
           return;
         }
 EOF
-            , $this->generateId($name, $value), $this->generateId($name, $value)) : null
+                    , $this->generateId($name, $value)
+                    , $this->generateId($name, $value)
+                    ) : null
             , $this->getOption("url")
+            , $this->buildDatas()
             , $this->getOption('caching') ? sprintf('cache_%s[value] = datas;', $this->generateId($name, $value)) : null
             ).parent::render($name, $this->getOption("multiple") ? implode(", ", $value) : $value, $attributes, $errors);
+  }
+  
+  protected function buildDatas()
+  {
+    return "q: value";
   }
 
   /*

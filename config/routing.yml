@@ -2,3 +2,8 @@ sf_epfactory_form_uploadify:
   url:   /sfEPFactoryForm/uploadify
   param: { module: sfEPFactoryForm, action: uploadify }
   requirements: { sf_method: [post] }
+
+sf_epfactory_form_autocomplete:
+  url:   /sfEPFactoryForm/autocomplete
+  param: { module: sfEPFactoryForm, action: autocomplete }
+  requirements: { sf_method: [post] }
