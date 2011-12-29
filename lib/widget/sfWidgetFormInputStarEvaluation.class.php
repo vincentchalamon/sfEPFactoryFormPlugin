@@ -19,8 +19,7 @@ class sfWidgetFormInputStarEvaluation extends sfWidgetFormInputHidden
   protected function configure($options = array(), $attributes = array())
   {
     parent::configure($options, $attributes);
-    $this->addRequiredOption('max');
-    $this->addOption('size', 16);
+    $this->addOption('max', 5);
   }
 
   public function isHidden() {
@@ -35,7 +34,7 @@ class sfWidgetFormInputStarEvaluation extends sfWidgetFormInputHidden
     var o = null;
     SV.init({
       num : %s,
-      size : %s,
+      size : 16,
       hoverCss : "hover",
       unhoverCss : "unhover",
       onclick : function(e){
@@ -48,7 +47,6 @@ class sfWidgetFormInputStarEvaluation extends sfWidgetFormInputHidden
 <div id="%s_star"></div>
 EOF
             , $this->getOption('max')
-            , $this->getOption('size')
             , $this->generateId($name, $value)
             , $this->generateId($name, $value)
             , (int)$value

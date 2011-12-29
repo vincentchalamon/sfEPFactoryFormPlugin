@@ -160,6 +160,9 @@
           }
         });
       });
+      $('.jquery-multiple-row', $(self)).each(function(){
+        self.settings.onAdd($.Event("click", { target: $('a.jquery-multiple-add', $(this)) }), $(this));
+      });
     });
 
     return this;
