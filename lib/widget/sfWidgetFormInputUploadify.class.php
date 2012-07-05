@@ -139,7 +139,10 @@ EOF
         return false;
       },
       'onError'         : function(event, ID, fileObj, errorObj) {
-        %s('%s : ' + errorObj.type + ' : ' + errorObj.info);
+        if(errorObj.status == 404) alert('Could not find upload script.');
+        else if(errorObj.type === "HTTP") alert('error '+errorObj.type+": "+errorObj.status);
+        else if(errorObj.type ==="File Size") alert(fileObj.name+' '+errorObj.type+' Limit: '+Math.round(%s/1024)+'KB');
+        else %s('%s : ' + errorObj.type + ' : ' + errorObj.text);
       }
     });
     $('%s').siblings('.uploadifyQueueCustom').find('.cancel a').click(function(event){
@@ -172,6 +175,7 @@ EOF
             , $this->getOption('multi') ? 'true' : 'false'
             , $this->getOption('alertFunction')
             , str_ireplace("'", "\'", str_ireplace('%%max%%', $this->getOption('max'), $this->getOption('fullMessage')))
+            , $this->getOption('sizeLimit') ? $this->getOption('sizeLimit') : "null"
             , $this->getOption('alertFunction')
             , str_ireplace("'", "\'", $this->getOption('errorMessage'))
             , $name
