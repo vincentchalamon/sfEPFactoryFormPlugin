@@ -1,3 +1,0 @@
-[submodule "web/ckeditor"]
-	path = web/ckeditor
-	url = git@github.com:vincentchalamon/ckeditor.git
