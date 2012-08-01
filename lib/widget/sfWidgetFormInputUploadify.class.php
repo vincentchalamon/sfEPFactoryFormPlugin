@@ -111,8 +111,9 @@ EOF
       'sizeLimit'       : %s,
       'onSelect'        : function(event, ID, fileObj) {
         if($('.uploadifyQueueItem', $(event.target).siblings('.uploadifyQueue')).length >= %s) {
-          ignore.push(ID);
-          $(this).uploadifyCancel(ID);
+          $('.uploadifyQueueItem:first .cancel a', $(event.target).siblings('.uploadifyQueue')).trigger('click');
+          //ignore.push(ID);
+          //$(this).uploadifyCancel(ID);
         }
       },
       'onComplete'      : function(event, ID, fileObj, response, data) {
