@@ -26,7 +26,7 @@ class sfWidgetFormDateJQueryUI extends sfWidgetFormInputText
     $this->addOption('show_button_panel', false);
     $this->addOption('show_previous_dates', true);
     $this->addOption('inline', false);
-    $this->addOption('mask', false);
+    $this->addOption('mask', true);
     $this->addOption('theme', '/sfEPFactoryFormPlugin/jqueryui/smoothness/jquery-ui.css');
     parent::configure($options, $attributes);
   }
