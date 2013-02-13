@@ -5,7 +5,7 @@ class sfWidgetFormInputFilemanager extends sfWidgetFormInputText
   protected function configure($options = array(), $attributes = array())
   {
     parent::configure($options, $attributes);
-    $this->addOption('path', '/uploads');
+    $this->addOption('path', '/uploads/');
     $this->addOption('button_label', 'Parcourir');
     $this->addOption('is_image', false);
     $this->addOption('width', 900);

@@ -6,7 +6,7 @@ class sfWidgetFormInputCkeditor extends sfWidgetFormTextarea
     parent::configure($options, $attributes);
     $this->addOption('width', 635);
     $this->addOption('height', 400);
-    $this->addOption('filemanager_path', "/uploads");
+    $this->addOption('filemanager_path', "/uploads/");
     $this->addOption('toolbar', "Custom");
   }
 
