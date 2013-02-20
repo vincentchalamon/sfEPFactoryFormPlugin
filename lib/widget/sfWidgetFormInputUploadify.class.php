@@ -28,6 +28,9 @@ class sfWidgetFormInputUploadify extends sfWidgetFormInputText
     if($this->getOption('fileExt') && !$this->getOption('fileDesc')) {
       throw new sfException(get_class($this)." requires fileDesc option when fileExt option is set.");
     }
+    if(!$this->getOption('multi')) {
+      $this->setOption('max', 1);
+    }
     if($this->getOption('scriptData') && !is_array($this->getOption('scriptData'))) {
       throw new InvalidArgumentException(get_class($this)." requires scriptData to be array.");
     }
