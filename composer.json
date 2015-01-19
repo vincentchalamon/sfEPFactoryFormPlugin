@@ -1,0 +1,13 @@
+{
+    "name": "vince/sf-epfactory-form-plugin",
+    "type": "symfony1-plugin",
+    "authors": [
+        {
+            "name": "Vincent Chalamon",
+            "email": "vincentchalamon@gmail.com"
+        }
+    ],
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
