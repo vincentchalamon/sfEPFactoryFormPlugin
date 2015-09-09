@@ -1,3 +1,5 @@
+**THIS PLUGIN IS NOT MAINTAINED ANYMORE !**
+
 Ce plugin symfony 1.4 fournit une liste de widgets et validateurs permettant d'agrémenter vos formulaires. La plupart de ces widgets utilisent [jQuery 1.6.1](http://jquery.com/) et [jQueryUI 1.8.13](http://jqueryui.com/).
 
 # <a id="widgets"></a>Widgets
