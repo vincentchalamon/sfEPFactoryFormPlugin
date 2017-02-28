@@ -134,15 +134,15 @@
      * Catch clicks
      */
     this.each(function(){
-      $('.jquery-multiple-create', $(self)).live('click', function(event){
+      $('.jquery-multiple-create', $(self)).bind('click', function(event){
         event.preventDefault();
         self.create(event);
       });
-      $('a.jquery-multiple-add', $(self)).live('click', function(event){
+      $('a.jquery-multiple-add', $(self)).bind('click', function(event){
         event.preventDefault();
         self.add(event);
       });
-      $('.jquery-multiple-remove', $(self)).live('click', function(event){
+      $('.jquery-multiple-remove', $(self)).bind('click', function(event){
         event.preventDefault();
         self.remove(event);
       });
